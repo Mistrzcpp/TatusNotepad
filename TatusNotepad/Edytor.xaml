@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TatusNotepad"
+             x:Class="TatusNotepad.Edytor"
+             >
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:Konwerter x:Key="Konwerter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView
+        BackgroundColor="{AppThemeBinding Light=#c3ceda}">
+        <VerticalStackLayout
+            Margin="50,20,50,20">
+            <Grid
+                ColumnDefinitions="auto, auto,*"
+                Margin="0,0,0,20"
+                ColumnSpacing="40">
+                <Entry
+                    Placeholder="Nazwa klienta"
+                    WidthRequest="600"
+                    HorizontalOptions="Start"
+                    x:Name="Nazwa"
+                    Grid.Column="0"
+                    TextChanged="ZmienPrzyciskZapisz"/>
+                <Label
+                    Text="{Binding zlecenie.data, Converter={StaticResource Konwerter}, ConverterParameter='DataEdytor'}"
+                    Grid.Column="1"></Label>
+                <Button
+                    Text="Zapisz"
+                    BackgroundColor="#00c9a7"
+                    Clicked="Zapisz"
+                    HorizontalOptions="End"
+                    Grid.Column="2"
+                    HeightRequest="20"
+                    x:Name="PrzyciskZapisz"/>
+            </Grid>
+            <HorizontalStackLayout>
+                <Entry
+                    Placeholder="Telefon"
+                    WidthRequest="280"
+                    HorizontalOptions="Start"
+                    x:Name="Telefon"
+                    Margin="0,0,20,20"
+                    TextChanged="ZmienPrzyciskZapisz"/>
+                <Entry
+                    Placeholder="E-mail"
+                    WidthRequest="300"
+                    HorizontalOptions="Start"
+                    x:Name="Email"
+                    Margin="0,0,0,20"
+                    TextChanged="ZmienPrzyciskZapisz"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout
+                Spacing="20"
+                Margin="0,0,0,20">
+                <Entry
+                    WidthRequest="600"
+                    Placeholder="Nazwa produktu"
+                    x:Name="NazwaProduktu"/>
+                <Entry
+                    WidthRequest="400"
+                    Placeholder="Indeks"
+                    x:Name="Indeks"/>
+                <Image
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    Source="plus.png"
+                    Grid.Column="0"
+                    HorizontalOptions="Start">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer 
+                            Tapped="DodajProdukt"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </HorizontalStackLayout>
+            <CollectionView
+                ItemsSource="{Binding produkty}"
+                Margin="0,0,0,10"
+                x:Name="KolekcjaProdukty">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#2f2f2f}">
+                            <HorizontalStackLayout
+                                Spacing="30">
+                                <Image
+                                    WidthRequest="20"
+                                    HeightRequest="20"
+                                    Source="minus.png"
+                                    Grid.Column="0">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Tapped="UsunProdukt" 
+                                            CommandParameter="{Binding nazwa}"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+                                <BoxView 
+                                    WidthRequest="2"
+                                    HeightRequest="30"
+                                    Color="{AppThemeBinding Light=#c8c8c8, Dark=#474747}"/>
+                                <Label
+                                    Text="{Binding nazwa}"
+                                    Grid.Column="1"/>
+                                <Label
+                                    Text="{Binding indeks}"
+                                    Grid.Column="2"/>
+                            </HorizontalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Editor
+                Placeholder="Uwagi"
+                HeightRequest="300"
+                HorizontalOptions="FillAndExpand"
+                x:Name="Uwagi"
+                TextChanged="ZmienPrzyciskZapisz"
+                BackgroundColor="{AppThemeBinding Light=#ffffff}"/>
+            <Frame
+                Background="{AppThemeBinding Light=#ffffff , Dark=#1f1f1f}"
+                Margin="0,20,0,0"
+                BorderColor="{AppThemeBinding Light=#f0f0f0, Dark=#2f2f2f}"
+                HorizontalOptions="FillAndExpand">
+                <Frame.GestureRecognizers>
+                    <DropGestureRecognizer Drop="UpuszczonoPlik"/>
+                    <TapGestureRecognizer Tapped="DolaczPlik"/>
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout>
+                    <Label 
+                        Text="Kliknij, aby dodać plik"
+                        TextColor="{AppThemeBinding Light=#d3d3d3, Dark=#5e5e5e}"
+                        x:Name="PlikInfo"/>
+                    <CollectionView
+                            ItemsSource="{Binding pliki}"
+                            x:Name="KolekcjaPlikow"
+                            Margin="0,10,0,0">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <HorizontalStackLayout
+                                        Spacing="10"
+                                        Margin="0,10,0,0">
+                                    <Image
+                                            WidthRequest="17"
+                                            HeightRequest="17"
+                                            Source="directory.png">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OtworzFolder" CommandParameter="{Binding tytul}"/>
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                    <Label
+                                            Text="{Binding tytul}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OtworzPlik" CommandParameter="{Binding tytul}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                    <Image
+                                            HorizontalOptions="End"
+                                            WidthRequest="15"
+                                            HeightRequest="15"
+                                            Source="minus.png">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                    Tapped="UsunPlik"
+                                                    CommandParameter="{Binding tytul}"/>
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </HorizontalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+            <HorizontalStackLayout
+                Spacing="10"
+                Margin="0,30,0,0">
+                <Button
+                    Text="Usuń"
+                    HorizontalOptions="Start"
+                    BackgroundColor="#ff6f91"
+                    Clicked="UsunZlecenie"
+                    x:Name="Usun"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

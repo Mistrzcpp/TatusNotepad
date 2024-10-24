@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TatusNotepad"
+             x:Class="TatusNotepad.MainPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:Konwerter x:Key="Konwerter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ScrollView>
+        
+        <VerticalStackLayout
+            BackgroundColor="{AppThemeBinding Light=#c3ceda}">
+            <VerticalStackLayout
+                BackgroundColor="{AppThemeBinding Light=#A3C7C7, Dark=#2f2f2f}"
+                Shadow="{Shadow Brush=#414141, Radius=5, Opacity=0.5}">
+                <Grid 
+                    ColumnDefinitions="0.1*, 0.8*, 0.07*"
+                    Padding="20,20,0,20"
+                    Margin="0,0,0,0">
+                    <Button
+                        Grid.Column="0"
+                        Text="Dodaj"
+                        BackgroundColor="#00c9a7"
+                        x:Name="Dodaj"
+                        Clicked="OtworzEdytor"/>
+                    <SearchBar
+                        Grid.Column="1"
+                        HorizontalOptions="FillAndExpand"
+                        Placeholder="Wyszukaj (#id)"
+                        Margin="20,0,0,0"
+                        SearchButtonPressed="WyszukajPoPrzycisku"
+                        TextChanged="WyszukajPoTekscie"
+                        x:Name="Wyszukiwarka"
+                        BackgroundColor="{AppThemeBinding Light=#ffffff}"/>
+                    <Image
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Source="filter.png"
+                        Grid.Column="2">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="PokazFiltry"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+                </Grid>
+                <VerticalStackLayout
+                    IsVisible="true"
+                    x:Name="Filtry">
+                    <HorizontalStackLayout
+                    Margin="20,0,20,10">
+                        <CheckBox
+                        x:Name="Przyjete"
+                        IsChecked="true"
+                        CheckedChanged="WyszukajPoFiltrze"/>
+                        <Label
+                        Text="Przyjęte"
+                        VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="WybierzStatus" CommandParameter="Przyjęte"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <CheckBox
+                        Margin="20,0,0,0"
+                        x:Name="Zamowione"
+                        IsChecked="true"
+                        CheckedChanged="WyszukajPoFiltrze"/>
+                        <Label
+                        Text="Zamówione"
+                        VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="WybierzStatus" CommandParameter="Zamówione"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <CheckBox
+                        Margin="20,0,0,0"
+                        x:Name="Powiadomiono"
+                        IsChecked="true"
+                        CheckedChanged="WyszukajPoFiltrze"/>
+                        <Label
+                        Text="Powiadomiono"
+                        VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="WybierzStatus" CommandParameter="Powiadomiono"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <CheckBox
+                        Margin="20,0,0,0"
+                        x:Name="Zrealizowane"
+                        CheckedChanged="WyszukajPoFiltrze"/>
+                        <Label
+                        Text="Zrealizowane"
+                        VerticalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="WybierzStatus" CommandParameter="Zrealizowane"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <Label
+                        Text="Data"
+                        Margin="40,0,0,0"
+                        VerticalOptions="Center"/>
+                        <Entry
+                        Placeholder="RRRR"
+                        Margin="10,0,0,0"
+                        x:Name="FiltrRok"
+                        TextChanged="KonkretnaData"/>
+                        <Entry
+                        Placeholder="MM"
+                        Margin="5,0,0,0"
+                        x:Name="FiltrMiesiac"
+                        TextChanged="KonkretnaData"/>
+                        <Entry
+                        Placeholder="DD"
+                        Margin="5,0,0,0"
+                        x:Name="FiltrDzien"
+                        TextChanged="KonkretnaData"/>
+                        <Label
+                        Text="Sortowanie"
+                        Margin="60,0,5,0"
+                        VerticalOptions="Center"/>
+                        <Picker
+                        x:Name="Sortowanie"
+                        SelectedIndexChanged="WyszukajPoFiltrze">
+                            <Picker.Items>
+                                <x:String>Status</x:String>
+                                <x:String>Od najnowszych</x:String>
+                                <x:String>Od najstarszych</x:String>
+                            </Picker.Items>
+                        </Picker>
+
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout
+                        Margin="0,0,0,20">
+                    <Label
+                        Text="Data od"
+                        Margin="24,0,10,0"
+                        VerticalOptions="Center"/>
+                    <DatePicker
+                        x:Name="PickerDataOd"
+                        MinimumDate="01/01/2024"
+                        MaximumDate="12/31/2050"
+                        Date="01/01/2024"
+                        DateSelected="DataOdDo"
+                        Format="yyyy-MM-dd"
+                        />
+                    <Label
+                        Text="Data do"
+                        Margin="40,0,10,0"
+                        VerticalOptions="Center"/>
+                    <DatePicker
+                        x:Name="PickerDataDo"
+                        MinimumDate="01/01/2024"
+                        MaximumDate="12/31/2050"
+                        DateSelected="DataOdDo"
+                        Format="yyyy-MM-dd"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
+            <CollectionView 
+                ItemsSource="{Binding Zlecenia}"
+                Margin="10,30,10,0"
+                x:Name="KolekcjaZlecen">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            BackgroundColor="{AppThemeBinding Light=#ffffff, Dark=#2f2f2f}"
+                            HorizontalOptions="FillAndExpand">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Tapped="OtworzEdytor" 
+                                    CommandParameter="{Binding id}"/>
+                            </Frame.GestureRecognizers>
+                            <Grid
+                                ColumnDefinitions="auto, auto, 0.6*, auto, auto, 150"
+                                RowDefinitions="*,*"
+                                ColumnSpacing="30">
+                                <Label 
+                                    Text="{Binding id}"
+                                    Grid.Column="0"
+                                    Grid.RowSpan="2"/>
+                                <Label 
+                                    Text="{Binding data}"
+                                    Grid.Column="1"
+                                    Grid.Row="0"/>
+                                <Label 
+                                    Text="{Binding data, Converter={StaticResource Konwerter}, ConverterParameter='CzasTrwania'}"
+                                    Grid.Column="1"
+                                    Grid.Row="1"
+                                    TextColor="{AppThemeBinding Light=#727272, Dark=#bdbdbd}"/>
+                                <Label 
+                                    Text="{Binding nazwa}"
+                                    Grid.Column="2"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="2"
+                                    LineBreakMode="WordWrap"/>
+                                <Label 
+                                    Text="{Binding telefon}"
+                                    Grid.Column="3"
+                                    Grid.Row="0"
+                                    Margin="0,0,0,0"
+                                    LineBreakMode="NoWrap"/>
+                                <Label 
+                                    Text="{Binding email}"
+                                    Grid.Column="3"
+                                    Grid.Row="1"
+                                    Margin="0,0,60,0"
+                                    TextColor="{AppThemeBinding Light=#727272, Dark=#bdbdbd}"/>
+                                <CollectionView
+                                    Grid.Column="4"
+                                    Grid.RowSpan="2"
+                                    ItemsSource="{Binding produkty}">
+                                    <CollectionView.ItemsLayout>
+                                        <LinearItemsLayout Orientation="Horizontal" />
+                                    </CollectionView.ItemsLayout>
+                                    <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <HorizontalStackLayout>
+                                                    <BoxView 
+                                                        WidthRequest="2"
+                                                        HeightRequest="40"
+                                                        Color="{AppThemeBinding Light=#c8c8c8, Dark=#474747}"/>
+                                                    <Label
+                                                        Text="{Binding nazwa}"
+                                                        Margin="5,0,5,0"/>
+                                                </HorizontalStackLayout>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                <Button 
+                                    Text="{Binding status, Converter={StaticResource Konwerter}, ConverterParameter='Napis'}"
+                                    Grid.Column="5"
+                                    Grid.RowSpan="2"
+                                    BackgroundColor="{Binding status, Converter={StaticResource Konwerter}}"
+                                    Clicked="ZmienStatus"
+                                    CommandParameter="{Binding id}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

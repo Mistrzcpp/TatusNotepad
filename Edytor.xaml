@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TatusNotepad"
+             x:Class="TatusNotepad.Edytor">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:Konwerter x:Key="Konwerter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout
+            Margin="50,20,50,20">
+            <Grid
+                ColumnDefinitions="auto, auto,*"
+                Margin="0,0,0,20"
+                ColumnSpacing="40">
+                <Entry
+                    Placeholder="Nazwa klienta"
+                    WidthRequest="600"
+                    HorizontalOptions="Start"
+                    x:Name="Nazwa"
+                    Grid.Column="0"/>
+                <Label
+                    Text="{Binding zlecenie.data, Converter={StaticResource Konwerter}, ConverterParameter='DataEdytor'}"
+                    Grid.Column="1"></Label>
+                <Button
+                    Text="Zapisz"
+                    BackgroundColor="#00c9a7"
+                    Clicked="Zapisz"
+                    HorizontalOptions="End"
+                    Grid.Column="2"
+                    HeightRequest="20"/>
+            </Grid>
+            <Entry
+                Placeholder="Telefon"
+                WidthRequest="300"
+                HorizontalOptions="Start"
+                x:Name="Telefon"
+                Margin="0,0,0,20"/>
+            <HorizontalStackLayout
+                Spacing="20"
+                Margin="0,0,0,20">
+                <Entry
+                    WidthRequest="600"
+                    Placeholder="Nazwa"
+                    x:Name="NazwaProduktu"/>
+                <Entry
+                    WidthRequest="400"
+                    Placeholder="Indeks"
+                    x:Name="Indeks"/>
+                <Image
+                    WidthRequest="20"
+                    HeightRequest="20"
+                    Source="plus.png"
+                    Grid.Column="0"
+                    HorizontalOptions="Start">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer 
+                            Tapped="DodajProdukt"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </HorizontalStackLayout>
+            <CollectionView
+                ItemsSource="{Binding produkty}"
+                Margin="0,0,0,10"
+                x:Name="KolekcjaProdukty">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            BackgroundColor="#2f2f2f">
+                            <HorizontalStackLayout
+                                Spacing="30">
+                                <Image
+                                    WidthRequest="20"
+                                    HeightRequest="20"
+                                    Source="minus.png"
+                                    Grid.Column="0">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Tapped="UsunProdukt" 
+                                            CommandParameter="{Binding id_produkt}"/>
+                                    </Image.GestureRecognizers>
+                                </Image>
+                                <BoxView 
+                                    WidthRequest="2"
+                                    HeightRequest="30"
+                                    Color="#474747"/>
+                                <Label
+                                    Text="{Binding nazwa}"
+                                    Grid.Column="1"/>
+                                <Label
+                                    Text="{Binding indeks}"
+                                    Grid.Column="2"/>
+                            </HorizontalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <HorizontalStackLayout>
+                <Editor
+                    Placeholder="Uwagi"
+                    WidthRequest="600"
+                    HeightRequest="300"
+                    HorizontalOptions="Start"
+                    x:Name="Uwagi"/>
+                <Frame
+                    Background="#1f1f1f"
+                    Margin="20,0,0,0"
+                    BorderColor="#2f2f2f"
+                    WidthRequest="400">
+                    <Label 
+                        Text="Upuść plik tutaj"
+                        TextColor="#5e5e5e"/>
+                </Frame>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout
+                Spacing="10"
+                Margin="0,30,0,0">
+                <Button
+                    Text="Usuń"
+                    HorizontalOptions="Start"
+                    BackgroundColor="#ff6f91"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
